@@ -10,6 +10,9 @@
 [ext_resource type="Texture2D" uid="uid://d4kqdp2fgm3ad" path="res://cat_walking_right_tween.png" id="5_20pc6"]
 [ext_resource type="Script" uid="uid://cjv7ks6kdncj0" path="res://GUI.gd" id="9_wkp8b"]
 [ext_resource type="FontFile" uid="uid://ccctpx1qmfgy3" path="res://ZrtwHackynotePersonalUse-pg6aR.otf" id="10_20pc6"]
+[ext_resource type="Texture2D" uid="uid://q1wseu8oryjm" path="res://Sentry_base.png" id="11_c6i3y"]
+[ext_resource type="Script" uid="uid://cpu5fvbklivha" path="res://turret.gd" id="12_c2ibq"]
+[ext_resource type="Texture2D" uid="uid://dnspedueeupin" path="res://Sentry_gun.png" id="13_j4qnp"]
 
 [sub_resource type="GDScript" id="GDScript_uu6xs"]
 script/source = "extends CharacterBody2D
@@ -35,6 +38,8 @@ func _physics_process(delta: float) -> void:
 		velocity.x = direction * SPEED
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
+	if Input.is_action_just_pressed(\"ui_down\") and direction:
+		velocity.x = direction * SPEED * 20
 		
 	if direction > 0:
 		$PlayerSpriteAnimated.play(\"walk_right\")
@@ -45,6 +50,7 @@ func _physics_process(delta: float) -> void:
 	elif direction == 0:
 		$PlayerSpriteAnimated.play(\"default\")
 		$PlayerSpriteAnimated.position.y = 1
+		
 
 	move_and_slide()
 "
@@ -511,13 +517,6 @@ sources/3 = SubResource("TileSetAtlasSource_fos0i")
 [sub_resource type="LabelSettings" id="LabelSettings_trn2v"]
 font = ExtResource("10_20pc6")
 
-[sub_resource type="Environment" id="Environment_6ov81"]
-
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_4ngvc"]
-dof_blur_far_enabled = true
-
-[sub_resource type="Compositor" id="Compositor_74evy"]
-
 [node name="Node2D" type="Node2D" unique_id=1511085153]
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=271434104 groups=["Collisons"]]
@@ -589,7 +588,17 @@ layout_mode = 2
 text = "exp:"
 label_settings = SubResource("LabelSettings_trn2v")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="CanvasLayer/Control" unique_id=546735305]
-environment = SubResource("Environment_6ov81")
-camera_attributes = SubResource("CameraAttributesPractical_4ngvc")
-compositor = SubResource("Compositor_74evy")
+[node name="Area2D" type="Area2D" parent="." unique_id=205520510]
+position = Vector2(153, 250)
+
+[node name="Sprite2D" type="Sprite2D" parent="Area2D" unique_id=572320581]
+position = Vector2(-3, -4)
+texture = ExtResource("11_c6i3y")
+
+[node name="Turret" type="Node2D" parent="Area2D" unique_id=1583546835]
+script = ExtResource("12_c2ibq")
+
+[node name="TurHead" type="Sprite2D" parent="Area2D/Turret" unique_id=1052826226]
+texture = ExtResource("13_j4qnp")
+
+[node name="RayCast2D" type="RayCast2D" parent="Area2D/Turret" unique_id=1578543558]
