@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://cqow47bch5ocs"]
+
+[ext_resource type="Texture2D" uid="uid://do0o33etkqpe" path="res://static cat.png" id="2_r0du0"]
+[ext_resource type="Texture2D" uid="uid://c8fhu36wvcqne" path="res://Block.png" id="3_r0du0"]
+
+[sub_resource type="GDScript" id="GDScript_uu6xs"]
+script/source = "extends CharacterBody2D
+
+
+const SPEED = 300.0
+const JUMP_VELOCITY = -400.0
+
+
+func _physics_process(delta: float) -> void:
+	# Add the gravity.
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+
+	# Handle jump.
+	if Input.is_action_just_pressed(\"ui_accept\") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+
+	# Get the input direction and handle the movement/deceleration.
+	# As good practice, you should replace UI actions with custom gameplay actions.
+	var direction := Input.get_axis(\"ui_left\", \"ui_right\")
+	if direction:
+		velocity.x = direction * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+
+	move_and_slide()
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yf5fn"]
+size = Vector2(52, 93)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+size = Vector2(34, 34)
+
+[node name="Node2D" type="Node2D" unique_id=1511085153]
+
+[node name="Player" type="CharacterBody2D" parent="." unique_id=271434104 groups=["Collisons"]]
+position = Vector2(479, 347)
+script = SubResource("GDScript_uu6xs")
+
+[node name="Player sprite" type="Sprite2D" parent="Player" unique_id=279360179]
+position = Vector2(6, 1)
+texture = ExtResource("2_r0du0")
+
+[node name="Area2D" type="Area2D" parent="Player" unique_id=610947514]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=2077360846]
+position = Vector2(0, -1.5)
+shape = SubResource("RectangleShape2D_yf5fn")
+
+[node name="Collision" type="StaticBody2D" parent="." unique_id=31900811 groups=["Collisons"]]
+position = Vector2(477, 461)
+
+[node name="Block" type="Sprite2D" parent="Collision" unique_id=1347017226]
+position = Vector2(1.5, -0.5)
+texture = ExtResource("3_r0du0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collision" unique_id=557036138 groups=["Collisons"]]
+position = Vector2(0.5, -0.5)
+shape = SubResource("RectangleShape2D_g4v7s")
